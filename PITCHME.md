@@ -168,7 +168,7 @@ Let's test it now!
 def string_transformer(s):
   """
   >>> string_transformer('Example Input')
-  'iNDEX eXAMPLE'
+  'iNPUT eXAMPLE'
   """
   ...
 
@@ -188,7 +188,7 @@ File "transformer.py", line 3, in __main__.string_transformer
 Failed example:
     string_transformer('Example Input')
 Expected:
-    'iNDEX eXAMPLE'
+    'iNPUT eXAMPLE'
 Got:
     'Input InputExample InputExample InputExample InputExample InputExample InputExample InputExample InputExample InputExample InputExample InputExample InputExample Example'
 **********************************************************************
@@ -203,6 +203,45 @@ Got:
 Rewind <<
 
 ---
+
+## Yes, we can
+
+```python
+def switch_case(s):
+  """
+  >>> switch_case('fOo bAr')
+  'FoO BaR'
+  """
+  ...
+```
+
++++
+
+## Step by step
+
+```python
+def reverse_words(s):
+  """
+  >>> reverse_words('Hello, world!')
+  'world! Hello,'
+  """
+  ...
+```
+
++++
+
+## Simple. Tested.
+
+```python
+def string_transformer(s):
+  """
+  >>> string_transformer('Example Input')
+  'iNPUT eXAMPLE'
+  """
+  return reverse_words(switch_case(s))
+```
+
+---
 @title[Append driven development]
 
 ### Questions in mind
@@ -212,6 +251,8 @@ Rewind <<
 
 +++
 @title[Watch my hands now]
+
+> We want to give access to the app to the registered users only
 
 ```python
 def login(username, password):
@@ -225,7 +266,7 @@ def login(username, password):
 +++
 @title[Keep watching]
 
-> We need to restrict access to mobile version to paid users only
+> We need to allow access to mobile version to paid users only
 
 ```python
 def login(username, password):
@@ -233,7 +274,7 @@ def login(username, password):
   is_valid, user = blackbox.check(username, password)
   if not is_valid:
     raise Unauthorized()
-  if user.subscription_type == 'mobile':
+  if 'mobile' in request.user_agent.string.lower():
     is_paid = PaymentService.check_mobile_subscription(username)
     if not is_paid:
       raise Conflict()
@@ -251,7 +292,7 @@ def login(username, password):
   is_valid, user = blackbox.check(username, password)
   if not is_valid:
     raise Unauthorized()
-  if user.subscription_type == 'mobile':
+  if 'mobile' in request.user_agent.string.lower():
     is_paid = PaymentService.check_subscription(username)
     if not is_paid:
       raise Conflict()
