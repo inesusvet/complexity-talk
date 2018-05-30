@@ -31,6 +31,7 @@ Its having the right attitudes thats hard.
 @title[Glossary]
 
 ## Definitions
+- Integration != _continuous integration_
 - _Development_ = creation, modification and bugfixin'
 - _Support_ = operation, configuration and bugfixin'
 
@@ -326,26 +327,65 @@ def login(username, password):
 def login(username, password):
   blackbox = BlackBox(os.environ['BLACKBOX_URL'])
   is_valid, user = blackbox.check(username, password)
-  return is_valid
+  if not is_valid:
+    raise Unauthorized()
+  return user
 ```
 
 +++
 @title[Break it into pieces]
 
-**TBD**
+```python
+def block_unpaid_mobile(username):
+  is_paid = PaymentService.check_subscription(username)
+  if not is_paid:
+    raise Conflict()
+```
+
++++
+@title[Small enough pieces]
+
+```python
+def redirect_potential_fraud_to_captcha(user, threshold=0.5):
+  if user.fraud_factor < threshold:
+    return
+
+  is_verified = CaptchaService.check(user.username)
+  if not is_verified:
+    return redirect(CaptchaService.redirect_url())
+```
+
++++
+@title[Combine them]
+
+```python
+def process_auth(request):
+  user = login(request.form.username, request.form.password)
+
+  if 'mobile' not in request.user_agent.string.lower():
+    block_unpaid_mobile(user.username)
+
+  captcha_url = redirect_potential_fraud_to_captcha(user)
+  if captcha_url is not None:
+    return captcha_url
+
+  return 'Welcome back', 200
+```
 
 ---
 @title[Second way]
 
 ## Composition
 - New feature as a new program with tests
-- Functional tests _and_ unit tests are required
+- Functional tests are still required
+- More indirection is introduced
 
 ---
 @title[References]
 
 ## Further reading & watching
 - [Integrated Tests Are A Scam](http://blog.thecodewhisperer.com/permalink/integrated-tests-are-a-scam)
+- [One more level of indirection](http://wiki.c2.com/?OneMoreLevelOfIndirection)
 
 ---
 @title[Thank you]
