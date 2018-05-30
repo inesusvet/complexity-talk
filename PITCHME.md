@@ -25,14 +25,14 @@ Its having the right attitudes thats hard.
 ## Target audience
 - You build software on daily basis
 - You have experience of supporting software of others
-- You think we can do better software
+- You think we can build better software
 
 +++
 @title[Glossary]
 
 ## Definitions
 - _Development_ = creation, modification and bugfixin'
-- _Support_ = operation, configuration management & bugfixin'
+- _Support_ = operation, configuration and bugfixin'
 
 ---
 @title[Why?]
@@ -44,16 +44,16 @@ Its having the right attitudes thats hard.
 
 ## Program grows because
 - Program needs to do some new tricks
-- Program needs to be compatible to some other program
-- Project team grows and more code is produced sooner
+- Program needs to comply with other program
+- Project team grows and more code is produced
 
 +++
 @title[Because]
 
 ## Why it's a problem to me?
 - Program isn't quite ready to embrace some changes
-- Team may have no idea/compliance where to put new changes
-- There is no time to explain!
+- Team may have no idea where to put new changes
+- There is **no time to explain**!
 
 ---
 @title[What is it]
@@ -70,7 +70,7 @@ Its having the right attitudes thats hard.
 @title[Simple]
 
 ## A simple [case](https://www.codewars.com/kata/string-transformer)
-> Given a string, return a new string that has transformed based on the input:
+Given a string, return a new string that has transformed based on the input:
 1. Change case of every character, ie. lower case to upper case, upper case to lower case.
 2. Reverse the order of words from the input.
 
@@ -84,7 +84,7 @@ def string_transformer(s):
 ```
 
 +++
-All lower cased to upper
+All lower-cased to upper
 
 ```python
 def string_transformer(s):
@@ -179,6 +179,8 @@ if __name__ == '__main__':
 
 +++
 
+### WASTED
+
 ```shell
 $ python test_transformer.py
 **********************************************************************
@@ -197,10 +199,6 @@ Got:
 
 +++
 
-# WASTED
-
-+++
-
 # Can we do better?
 Rewind <<
 
@@ -209,8 +207,8 @@ Rewind <<
 
 ### Questions in mind
 - How to build a unit test to it?
-- How to build a functional test to it?
 - How to build an integration test to it?
+- How to build a functional test to it?
 
 +++
 @title[Watch my hands now]
@@ -219,36 +217,49 @@ Rewind <<
 def login(username, password):
   blackbox = BlackBox(os.environ['BLACKBOX_URL'])
   is_valid, user = blackbox.check(username, password)
-  return is_valid
+  if not is_valid:
+    raise Unauthorized()
+  return user
 ```
 
 +++
 @title[Keep watching]
 
+> We need to restrict access to mobile version to paid users only
+
 ```python
 def login(username, password):
   blackbox = BlackBox(os.environ['BLACKBOX_URL'])
   is_valid, user = blackbox.check(username, password)
+  if not is_valid:
+    raise Unauthorized()
   if user.subscription_type == 'mobile':
-    is_paid = blackbox.check_mobile_subscription(username)
-    return is_valid and is_paid
-  return is_valid
+    is_paid = PaymentService.check_mobile_subscription(username)
+    if not is_paid:
+      raise Conflict()
+  return user
 ```
 
 +++
 @title[Have you noticed the trick?]
 
+> We have to prevent any fraud attempts as early as possible
+
 ```python
 def login(username, password):
   blackbox = BlackBox(os.environ['BLACKBOX_URL'])
   is_valid, user = blackbox.check(username, password)
+  if not is_valid:
+    raise Unauthorized()
   if user.subscription_type == 'mobile':
-    is_paid = .check_subscription(username)
-    return is_valid and is_paid
+    is_paid = PaymentService.check_subscription(username)
+    if not is_paid:
+      raise Conflict()
   elif user.fraud_factor >= 0.5:
-    is_verified = captcha.check(username)
-    return is_valid and is_verified
-  return is_valid
+    is_verified = CaptchaService.check(username)
+    if not is_verified:
+      raise UnprocessableEntity()
+  return user
 ```
 
 +++
@@ -280,7 +291,7 @@ def login(username, password):
 +++
 @title[Break it into pieces]
 
-TBD
+**TBD**
 
 ---
 @title[Second way]
