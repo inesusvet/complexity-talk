@@ -386,6 +386,7 @@ def process_auth(request):
 ## Further reading & watching
 - [Integrated Tests Are A Scam](http://blog.thecodewhisperer.com/permalink/integrated-tests-are-a-scam)
 - [One more level of indirection](http://wiki.c2.com/?OneMoreLevelOfIndirection)
+- Kent Beck, Test Driven Development: By Example
 
 ---
 @title[Thank you]
